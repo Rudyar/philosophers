@@ -6,7 +6,7 @@
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 09:49:46 by arudy             #+#    #+#             */
-/*   Updated: 2022/01/31 14:39:04 by arudy            ###   ########.fr       */
+/*   Updated: 2022/01/31 16:33:26 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,11 @@
 # include <stdlib.h>
 # include <pthread.h>
 # include <sys/time.h>
+
+typedef struct s_philo
+{
+	int	philo_n;
+}t_philo;
 
 typedef struct s_data
 {

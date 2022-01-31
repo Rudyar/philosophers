@@ -6,7 +6,7 @@
 #    By: arudy <arudy@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/31 09:49:31 by arudy             #+#    #+#              #
-#    Updated: 2022/01/31 12:20:33 by arudy            ###   ########.fr        #
+#    Updated: 2022/01/31 16:36:58 by arudy            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,7 +21,7 @@ NAME = philo
 
 CC = gcc
 
-CFLAGS = -Wall -Werror -Wextra
+CFLAGS = -Wall -Werror -Wextra -pthread
 
 RM = rm -f
 
