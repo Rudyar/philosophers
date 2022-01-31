@@ -6,7 +6,7 @@
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 12:10:38 by arudy             #+#    #+#             */
-/*   Updated: 2022/01/31 12:30:04 by arudy            ###   ########.fr       */
+/*   Updated: 2022/01/31 14:38:54 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,8 @@ void	init_data(int ac, char **av, t_data *data)
 	data->time_to_die = ft_atoi(av[2]);
 	data->time_to_eat = ft_atoi(av[3]);
 	data->time_to_sleep = ft_atoi(av[4]);
-	if (ac == 6)
+	if (ac == 6 && ft_atoi(av[5]) > 0)
 		data->nb_must_eat = ft_atoi(av[5]);
 	else
-		data->nb_must_eat = 0;
+		data->nb_must_eat = -1;
 }

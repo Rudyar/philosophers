@@ -6,7 +6,7 @@
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 10:36:42 by arudy             #+#    #+#             */
-/*   Updated: 2022/01/31 12:08:31 by arudy            ###   ########.fr       */
+/*   Updated: 2022/01/31 14:32:31 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,10 +62,10 @@ void	check_is_int(int ac, char **av)
 	while (i < ac)
 	{
 		if (ft_strlen(av[i]) > 11)
-			ft_error("Only int args\n");
+			ft_error("Arg too long\n");
 		res = ft_atoll(av[i]);
-		if (res > 2147483647)
-			ft_error("Only int args\n");
+		if (res > 2147483647 / 1000)
+			ft_error("Time too long\n");
 		i++;
 	}
 }
