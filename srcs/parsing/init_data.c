@@ -6,7 +6,7 @@
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 12:10:38 by arudy             #+#    #+#             */
-/*   Updated: 2022/03/11 09:53:54 by arudy            ###   ########.fr       */
+/*   Updated: 2022/03/12 17:50:35 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,20 +27,47 @@ int	ft_atoi(const char *str)
 	return (n);
 }
 
+void	init_philo(t_data *data)
+{
+	int	i;
+
+	i = 0;
+	while (i < data->nb_philo)
+	{
+		data->philo[i].philo_id = i;
+		data->philo[i].fork_right = NULL;
+		data->philo[i].count_eat = 0;
+		pthread_mutex_init(&data->philo[i].fork_left, NULL);
+		i++;
+	}
+	if (data->nb_philo == 1)
+		return ;
+	i = 0;
+	while (i < data->nb_philo - 1)
+	{
+		data->philo[i].fork_right = &data->philo[i + 1].fork_left;
+		i++;
+	}
+	data->philo[i].fork_right = &data->philo[0].fork_left;
+}
+
 void	init_data(int ac, char **av, t_data *data)
 {
 	data->nb_philo = ft_atoi(av[1]);
 	data->time_to_die = ft_atoi(av[2]);
 	data->time_to_eat = ft_atoi(av[3]);
 	data->time_to_sleep = ft_atoi(av[4]);
-	if (ac == 6 && ft_atoi(av[5]) > 0)
+	if (ac == 6 && ft_atoi(av[5]) == 0)
+		ft_error("Only > 0 args\n");
+	else if (ac == 6 && ft_atoi(av[5]) > 0)
 		data->nb_must_eat = ft_atoi(av[5]);
 	else
 		data->nb_must_eat = -1;
 	if (data->nb_philo <= 0 || data->time_to_die <= 0
 		|| data->time_to_eat <= 0 || data->time_to_sleep <= 0)
-	{
-		ft_putstr_fd("Only > 0 args\n", 2);
+		ft_error("Only > 0 args\n");
+	data->philo = malloc(sizeof(t_philo) * data->nb_philo);
+	if (!data->philo)
 		exit (EXIT_FAILURE);
-	}
+	init_philo(data);
 }

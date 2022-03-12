@@ -6,7 +6,7 @@
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 09:49:46 by arudy             #+#    #+#             */
-/*   Updated: 2022/01/31 16:33:26 by arudy            ###   ########.fr       */
+/*   Updated: 2022/03/12 17:25:38 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,19 +21,25 @@
 
 typedef struct s_philo
 {
-	int	philo_n;
+	int				philo_id;
+	int				count_eat ;
+	pthread_t		philo;
+	pthread_mutex_t	fork_left;
+	pthread_mutex_t	*fork_right;
 }t_philo;
 
 typedef struct s_data
 {
-	int	nb_philo;
-	int	time_to_die;
-	int	time_to_eat;
-	int	time_to_sleep;
-	int	nb_must_eat;
+	int		nb_philo;
+	int		time_to_die;
+	int		time_to_eat;
+	int		time_to_sleep;
+	int		nb_must_eat;
+	t_philo	*philo;
 }t_data;
 
 size_t	ft_strlen(const char *str);
+void	ft_error(char *msg);
 void	ft_putstr_fd(char *s, int fd);
 void	check_args(int ac, char **av);
 void	init_data(int ac, char **av, t_data *data);

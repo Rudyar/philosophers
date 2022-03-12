@@ -6,17 +6,11 @@
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 10:36:42 by arudy             #+#    #+#             */
-/*   Updated: 2022/03/11 10:00:43 by arudy            ###   ########.fr       */
+/*   Updated: 2022/03/12 15:27:01 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../philo.h"
-
-void	ft_error(char *msg)
-{
-	ft_putstr_fd(msg, 2);
-	exit (EXIT_FAILURE);
-}
 
 void	check_digit(int ac, char **av)
 {
@@ -52,14 +46,14 @@ long long	ft_atoll(char *str)
 	return (n);
 }
 
-void	check_is_int(int ac, char **av)
+void	check_is_int(char **av)
 {
 	int			i;
 	long long	res;
 
-	i = 1;
+	i = 2;
 	res = 0;
-	while (i < ac)
+	while (i < 5)
 	{
 		if (ft_strlen(av[i]) > 11)
 			ft_error("Arg too long\n");
@@ -75,5 +69,5 @@ void	check_args(int ac, char **av)
 	if (ac < 5 || ac > 6)
 		ft_error("Wrong number of args\n");
 	check_digit(ac, av);
-	check_is_int(ac, av);
+	check_is_int(av);
 }

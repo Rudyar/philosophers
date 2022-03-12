@@ -1,23 +1,19 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   ft_error.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/31 09:55:12 by arudy             #+#    #+#             */
-/*   Updated: 2022/03/12 17:53:28 by arudy            ###   ########.fr       */
+/*   Created: 2022/03/12 15:26:23 by arudy             #+#    #+#             */
+/*   Updated: 2022/03/12 15:27:05 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../philo.h"
+#include "../../philo.h"
 
-int	main(int ac, char **av)
+void	ft_error(char *msg)
 {
-	t_data	data;
-
-	check_args(ac, av);
-	init_data(ac, av, &data);
-	free(data.philo);
-	return (0);
+	ft_putstr_fd(msg, 2);
+	exit (EXIT_FAILURE);
 }
