@@ -1,24 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   routine.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/01/31 09:55:12 by arudy             #+#    #+#             */
-/*   Updated: 2022/03/13 16:40:37 by arudy            ###   ########.fr       */
+/*   Created: 2022/03/13 14:05:57 by arudy             #+#    #+#             */
+/*   Updated: 2022/03/13 16:58:06 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../philo.h"
+#include "../../philo.h"
 
-int	main(int ac, char **av)
+void	*routine(void *philo)
 {
-	t_data	data;
+	t_philo	*p;
 
-	check_args(ac, av);
-	init_data(ac, av, &data);
-	start_routine(&data);
-	free(data.philo);
-	return (0);
+	p = (t_philo *)philo;
+	
+	printf("philo id : %d\n\n", p->philo_id);
+	return (NULL);
+}
+
+void	start_routine(t_data *data)
+{
+	int	i;
+
+	i = 0;
+	while (i < data->nb_philo)
+	{
+		if (data->philo[i].philo_id % 2 == 0)
+			usleep(1000);
+		pthread_create(&data->philo[i].philo, NULL, routine, &data->philo[i]);
+		i++;
+	}
 }

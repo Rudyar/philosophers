@@ -6,7 +6,7 @@
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 12:10:38 by arudy             #+#    #+#             */
-/*   Updated: 2022/03/12 17:50:35 by arudy            ###   ########.fr       */
+/*   Updated: 2022/03/13 14:15:49 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	init_philo(t_data *data)
 	i = 0;
 	while (i < data->nb_philo)
 	{
-		data->philo[i].philo_id = i;
+		data->philo[i].philo_id = i + 1;
 		data->philo[i].fork_right = NULL;
 		data->philo[i].count_eat = 0;
 		pthread_mutex_init(&data->philo[i].fork_left, NULL);
@@ -68,6 +68,6 @@ void	init_data(int ac, char **av, t_data *data)
 		ft_error("Only > 0 args\n");
 	data->philo = malloc(sizeof(t_philo) * data->nb_philo);
 	if (!data->philo)
-		exit (EXIT_FAILURE);
+		ft_error("Malloc problem\n");
 	init_philo(data);
 }

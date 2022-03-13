@@ -6,14 +6,14 @@
 #    By: arudy <arudy@student.42.fr>                +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/01/31 09:49:31 by arudy             #+#    #+#              #
-#    Updated: 2022/03/12 17:18:19 by arudy            ###   ########.fr        #
+#    Updated: 2022/03/13 16:16:49 by arudy            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 
 SRCS = $(addprefix srcs/, main.c parsing/check_args.c \
 		parsing/init_data.c utils/ft_putstr_fd.c \
-		utils/ft_strlen.c utils/ft_error.c)
+		utils/ft_strlen.c utils/ft_error.c routine/routine.c)
 
 OBJS = ${SRCS:.c=.o}
 
@@ -21,7 +21,7 @@ NAME = philo
 
 CC = gcc
 
-CFLAGS = -Wall -Werror -Wextra -pthread -g3
+CFLAGS = -Wall -Werror -Wextra -pthread
 
 RM = rm -f
 
