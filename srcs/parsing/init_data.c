@@ -6,7 +6,7 @@
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 12:10:38 by arudy             #+#    #+#             */
-/*   Updated: 2022/03/13 14:15:49 by arudy            ###   ########.fr       */
+/*   Updated: 2022/03/14 17:50:13 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,6 +27,12 @@ int	ft_atoi(const char *str)
 	return (n);
 }
 
+void	init_mutex(t_data *data)
+{
+	pthread_mutex_init(&data->write_mutex, NULL);
+	pthread_mutex_init(&data->eat_mutex, NULL);
+}
+
 void	init_philo(t_data *data)
 {
 	int	i;
@@ -37,6 +43,7 @@ void	init_philo(t_data *data)
 		data->philo[i].philo_id = i + 1;
 		data->philo[i].fork_right = NULL;
 		data->philo[i].count_eat = 0;
+		data->philo[i].data = data;
 		pthread_mutex_init(&data->philo[i].fork_left, NULL);
 		i++;
 	}
@@ -70,4 +77,5 @@ void	init_data(int ac, char **av, t_data *data)
 	if (!data->philo)
 		ft_error("Malloc problem\n");
 	init_philo(data);
+	init_mutex(data);
 }
