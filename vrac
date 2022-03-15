@@ -1,3 +1,2 @@
 secure init data & mutex
-destroy mutex philo
-usleep % 2
+death mutex ?

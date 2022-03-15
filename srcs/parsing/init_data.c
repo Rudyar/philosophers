@@ -6,7 +6,7 @@
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 12:10:38 by arudy             #+#    #+#             */
-/*   Updated: 2022/03/14 17:50:13 by arudy            ###   ########.fr       */
+/*   Updated: 2022/03/15 16:19:39 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	ft_atoi(const char *str)
 void	init_mutex(t_data *data)
 {
 	pthread_mutex_init(&data->write_mutex, NULL);
-	pthread_mutex_init(&data->eat_mutex, NULL);
+	pthread_mutex_init(&data->stop_mutex, NULL);
 }
 
 void	init_philo(t_data *data)
@@ -44,7 +44,10 @@ void	init_philo(t_data *data)
 		data->philo[i].fork_right = NULL;
 		data->philo[i].count_eat = 0;
 		data->philo[i].data = data;
+		data->philo[i].is_dead = 0;
+		data->philo[i].last_eat = 0;
 		pthread_mutex_init(&data->philo[i].fork_left, NULL);
+		pthread_mutex_init(&data->philo[i].last_eat_mutex, NULL);
 		i++;
 	}
 	if (data->nb_philo == 1)
@@ -64,6 +67,7 @@ void	init_data(int ac, char **av, t_data *data)
 	data->time_to_die = ft_atoi(av[2]);
 	data->time_to_eat = ft_atoi(av[3]);
 	data->time_to_sleep = ft_atoi(av[4]);
+	data->stop = 0;
 	if (ac == 6 && ft_atoi(av[5]) == 0)
 		ft_error("Only > 0 args\n");
 	else if (ac == 6 && ft_atoi(av[5]) > 0)
