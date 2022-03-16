@@ -6,7 +6,7 @@
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 12:10:38 by arudy             #+#    #+#             */
-/*   Updated: 2022/03/16 17:53:38 by arudy            ###   ########.fr       */
+/*   Updated: 2022/03/16 18:08:26 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,6 @@ void	init_philo(t_data *data)
 		data->philo[i].fork_right = NULL;
 		data->philo[i].count_eat = 0;
 		data->philo[i].data = data;
-		data->philo[i].is_dead = 0;
 		data->philo[i].last_eat = 0;
 		pthread_mutex_init(&data->philo[i].fork_left, NULL);
 		pthread_mutex_init(&data->philo[i].last_eat_mutex, NULL);

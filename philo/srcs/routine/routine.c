@@ -6,7 +6,7 @@
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/13 14:05:57 by arudy             #+#    #+#             */
-/*   Updated: 2022/03/16 17:51:30 by arudy            ###   ########.fr       */
+/*   Updated: 2022/03/16 18:20:25 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	sleep_think_routine(t_philo *philo)
 	pthread_mutex_lock(&philo->data->write_mutex);
 	print_status("is sleeping\n", philo);
 	pthread_mutex_unlock(&philo->data->write_mutex);
-	ft_usleep(philo->data->time_to_sleep);
+	ft_usleep(philo->data->time_to_sleep, philo->data);
 	pthread_mutex_lock(&philo->data->write_mutex);
 	print_status("is thinking\n", philo);
 	pthread_mutex_unlock(&philo->data->write_mutex);
@@ -37,11 +37,11 @@ void	eat_routine(t_philo *philo)
 	print_status("is eating\n", philo);
 	pthread_mutex_unlock(&philo->data->write_mutex);
 	pthread_mutex_lock(&philo->last_eat_mutex);
-	philo->last_eat = get_time() - philo->data->start_time;
+	philo->last_eat = get_time(philo->data) - philo->data->start_time;
 	if (philo->data->nb_must_eat != -1)
 		philo->count_eat++;
 	pthread_mutex_unlock(&philo->last_eat_mutex);
-	ft_usleep(philo->data->time_to_eat);
+	ft_usleep(philo->data->time_to_eat, philo->data);
 	pthread_mutex_unlock(&philo->fork_left);
 	pthread_mutex_unlock(philo->fork_right);
 }
@@ -56,7 +56,7 @@ void	*start_routine(void *philo)
 	dead = p->data->stop;
 	pthread_mutex_unlock(&p->data->stop_mutex);
 	if (p->philo_id % 2 == 0)
-		ft_usleep(p->data->time_to_eat / 10);
+		ft_usleep(p->data->time_to_eat / 10, p->data);
 	while (dead == 0)
 	{
 		eat_routine(p);
@@ -78,7 +78,7 @@ int	check_death(t_data *data)
 		while (i < data->nb_philo)
 		{
 			pthread_mutex_lock(&data->philo[i].last_eat_mutex);
-			if (get_time() - data->philo[i].last_eat - data->start_time
+			if (get_time(data) - data->philo[i].last_eat - data->start_time
 				> data->time_to_die)
 				return (ft_dead(data, i));
 			pthread_mutex_unlock(&data->philo[i].last_eat_mutex);
@@ -102,7 +102,7 @@ void	start_philo(t_data *data)
 	int	i;
 
 	i = 0;
-	data->start_time = get_time();
+	data->start_time = get_time(data);
 	while (i < data->nb_philo)
 	{
 		if (pthread_create(&data->philo[i].philo, NULL, start_routine,
