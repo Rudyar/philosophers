@@ -6,7 +6,7 @@
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/13 14:05:57 by arudy             #+#    #+#             */
-/*   Updated: 2022/03/15 17:06:26 by arudy            ###   ########.fr       */
+/*   Updated: 2022/03/16 16:41:15 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	eat_routine(t_philo *philo)
 	print_status("is eating\n", philo);
 	pthread_mutex_unlock(&philo->data->write_mutex);
 	pthread_mutex_lock(&philo->last_eat_mutex);
-	philo->last_eat = get_time();
+	philo->last_eat = get_time() - philo->data->start_time;
 	if (philo->data->nb_must_eat != -1)
 		philo->count_eat++;
 	pthread_mutex_unlock(&philo->last_eat_mutex);
@@ -49,27 +49,35 @@ void	eat_routine(t_philo *philo)
 void	*start_routine(void *philo)
 {
 	t_philo	*p;
+	int		dead;
 
 	p = (t_philo *)philo;
+	pthread_mutex_lock(&p->data->stop_mutex);
+	dead = p->data->stop;
+	pthread_mutex_unlock(&p->data->stop_mutex);
 	if (p->philo_id % 2 == 0)
 		ft_usleep(p->data->time_to_eat / 10);
-	while (p->data->stop == 0)
+	while (dead == 0)
 	{
 		eat_routine(p);
 		sleep_think_routine(p);
+		pthread_mutex_lock(&p->data->stop_mutex);
+		dead = p->data->stop;
+		pthread_mutex_unlock(&p->data->stop_mutex);
 	}
+	pthread_mutex_lock(&p->data->write_mutex);
+	printf("---fin thread\n");
+	pthread_mutex_unlock(&p->data->write_mutex);
 	return (NULL);
 }
 
 int	check_death(t_data *data)
 {
 	int	i;
-	int	j;
 
-	while (j != data->nb_must_eat)
+	while (1)
 	{
 		i = 0;
-		j = 0;
 		while (i < data->nb_philo)
 		{
 			pthread_mutex_lock(&data->philo[i].last_eat_mutex);
@@ -77,21 +85,21 @@ int	check_death(t_data *data)
 			{
 				pthread_mutex_lock(&data->write_mutex);
 				print_status("died\n", &data->philo[i]);
-				return (1);
 				pthread_mutex_unlock(&data->write_mutex);
 				pthread_mutex_unlock(&data->philo[i].last_eat_mutex);
+				return (1);
 			}
+			pthread_mutex_unlock(&data->philo[i].last_eat_mutex);
 			i++;
 		}
-		i = 0;
-		while (i < data->nb_philo)
+		if (data->nb_must_eat != -1)
 		{
-			if (data->philo[i].count_eat == data->nb_must_eat)
-				j++;
-			i++;
+			i = 0;
+			while (i < data->nb_philo && data->philo[i].count_eat == data->nb_must_eat)
+				i++;
+			if (i == data->nb_philo)
+				return (1);
 		}
-		if (j == data->nb_must_eat)
-			return (1);
 	}
 	return (0);
 }
@@ -112,7 +120,9 @@ void	start_philo(t_data *data)
 	{
 		if (check_death(data) == 1)
 		{
+			pthread_mutex_lock(&data->stop_mutex);
 			data->stop = 1;
+			pthread_mutex_unlock(&data->stop_mutex);
 			return ;
 		}
 	}

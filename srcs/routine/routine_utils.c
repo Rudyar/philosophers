@@ -6,7 +6,7 @@
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/14 18:00:54 by arudy             #+#    #+#             */
-/*   Updated: 2022/03/15 14:46:34 by arudy            ###   ########.fr       */
+/*   Updated: 2022/03/16 14:32:47 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,9 +28,14 @@ void	print_status(char *s, t_philo *philo)
 {
 	long int	elapsed_time;
 
-	elapsed_time = get_time() - philo->data->start_time;
-	printf("%ld ", elapsed_time);
-	printf("%d %s", philo->philo_id, s);
+	pthread_mutex_lock(&philo->data->stop_mutex);
+	if (philo->data->stop == 0)
+	{
+		elapsed_time = get_time() - philo->data->start_time;
+		printf("%ld ", elapsed_time);
+		printf("%d %s", philo->philo_id, s);
+	}
+	pthread_mutex_unlock(&philo->data->stop_mutex);
 }
 
 void	ft_usleep(long int time)
