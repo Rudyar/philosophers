@@ -6,7 +6,7 @@
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/14 18:00:54 by arudy             #+#    #+#             */
-/*   Updated: 2022/03/16 18:18:25 by arudy            ###   ########.fr       */
+/*   Updated: 2022/03/17 18:04:53 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,18 +32,18 @@ void	print_status(char *s, t_philo *philo)
 	pthread_mutex_lock(&philo->data->stop_mutex);
 	if (philo->data->stop == 0)
 	{
+		pthread_mutex_lock(&philo->data->write_mutex);
 		elapsed_time = get_time(philo->data) - philo->data->start_time;
 		printf("%ld ", elapsed_time);
 		printf("%d %s", philo->philo_id, s);
+		pthread_mutex_unlock(&philo->data->write_mutex);
 	}
 	pthread_mutex_unlock(&philo->data->stop_mutex);
 }
 
 int	ft_dead(t_data *data, int i)
 {
-	pthread_mutex_lock(&data->write_mutex);
 	print_status("died\n", &data->philo[i]);
-	pthread_mutex_unlock(&data->write_mutex);
 	pthread_mutex_unlock(&data->philo[i].last_eat_mutex);
 	return (1);
 }
