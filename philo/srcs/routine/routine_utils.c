@@ -6,7 +6,7 @@
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/14 18:00:54 by arudy             #+#    #+#             */
-/*   Updated: 2022/03/17 18:23:43 by arudy            ###   ########.fr       */
+/*   Updated: 2022/03/17 19:49:51 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,8 @@ long int	get_time(t_data *data)
 
 	if (gettimeofday(&time, NULL) == -1)
 	{
-		printf("Can't get time of the day\n");
 		clean(data);
-		exit(EXIT_FAILURE);
+		ft_error("Can't get time of the day\n");
 	}
 	return ((time.tv_sec * 1000) + (time.tv_usec / 1000));
 }
@@ -72,5 +71,14 @@ void	ft_usleep(long int time, t_data *data)
 
 	start_time = get_time(data);
 	while ((get_time(data) - start_time) < time)
-		usleep(time / 10);
+	{
+		pthread_mutex_lock(&data->stop_mutex);
+		if (data->stop)
+		{
+			pthread_mutex_unlock(&data->stop_mutex);
+			return ;
+		}
+		pthread_mutex_unlock(&data->stop_mutex);
+		usleep(time / 10000);
+	}
 }

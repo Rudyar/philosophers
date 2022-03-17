@@ -6,16 +6,44 @@
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 12:10:38 by arudy             #+#    #+#             */
-/*   Updated: 2022/03/16 18:08:26 by arudy            ###   ########.fr       */
+/*   Updated: 2022/03/17 19:45:20 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../philo.h"
 
+void	mutex_error(int i, int n, t_data *data)
+{
+	int	j;
+
+	j = 0;
+	while (j < i)
+		pthread_mutex_destroy(&data->philo[j++].fork_left);
+	if (n == 2)
+	{
+		j = 0;
+		while (j < i)
+			pthread_mutex_destroy(&data->philo[j++].last_eat_mutex);
+	}
+	pthread_mutex_destroy(&data->write_mutex);
+	pthread_mutex_destroy(&data->stop_mutex);
+	free(data->philo);
+	ft_error("Can't init forks mutexs ");
+}
+
 void	init_mutex(t_data *data)
 {
-	pthread_mutex_init(&data->write_mutex, NULL);
-	pthread_mutex_init(&data->stop_mutex, NULL);
+	if (pthread_mutex_init(&data->write_mutex, NULL))
+	{
+		free(data->philo);
+		ft_error("Can't init write mutex\n");
+	}
+	if (pthread_mutex_init(&data->stop_mutex, NULL))
+	{
+		pthread_mutex_destroy(&data->write_mutex);
+		free(data->philo);
+		ft_error("Can't init stop mutex\n");
+	}
 }
 
 void	init_philo(t_data *data)
@@ -30,8 +58,10 @@ void	init_philo(t_data *data)
 		data->philo[i].count_eat = 0;
 		data->philo[i].data = data;
 		data->philo[i].last_eat = 0;
-		pthread_mutex_init(&data->philo[i].fork_left, NULL);
-		pthread_mutex_init(&data->philo[i].last_eat_mutex, NULL);
+		if (pthread_mutex_init(&data->philo[i].fork_left, NULL))
+			return (mutex_error(i, 1, data));
+		if (pthread_mutex_init(&data->philo[i].last_eat_mutex, NULL))
+			return (mutex_error(i, 2, data));
 		i++;
 	}
 	i = 0;

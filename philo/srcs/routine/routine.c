@@ -6,7 +6,7 @@
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/13 14:05:57 by arudy             #+#    #+#             */
-/*   Updated: 2022/03/17 18:24:53 by arudy            ###   ########.fr       */
+/*   Updated: 2022/03/17 19:55:48 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,19 @@ void	eat_routine(t_philo *philo)
 {
 	lock_fork(philo, 1);
 	print_status("has taken a fork\n", philo);
+	if (philo->data->nb_philo == 1)
+	{
+		pthread_mutex_unlock(&philo->fork_left);
+		print_status("died\n", philo);
+		pthread_mutex_lock(&philo->data->stop_mutex);
+		philo->data->stop = 1;
+		pthread_mutex_unlock(&philo->data->stop_mutex);
+		return ;
+	}
 	lock_fork(philo, 2);
 	print_status("has taken a fork\n", philo);
-	print_status("is eating\n", philo);
 	pthread_mutex_lock(&philo->last_eat_mutex);
+	print_status("is eating\n", philo);
 	philo->last_eat = get_time(philo->data) - philo->data->start_time;
 	if (philo->data->nb_must_eat != -1)
 		philo->count_eat++;
@@ -50,7 +59,7 @@ void	*start_routine(void *philo)
 	while (dead == 0)
 	{
 		eat_routine(p);
-		sleep_think_routine(p);
+		sleep_think_routine(philo);
 		pthread_mutex_lock(&p->data->stop_mutex);
 		dead = p->data->stop;
 		pthread_mutex_unlock(&p->data->stop_mutex);
@@ -98,7 +107,7 @@ void	start_philo(t_data *data)
 		if (pthread_create(&data->philo[i].philo, NULL, start_routine,
 				&data->philo[i]))
 		{
-			free(data->philo);
+			clean(data);
 			ft_error("Can't create thread");
 		}
 		i++;
