@@ -6,7 +6,7 @@
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/13 14:05:57 by arudy             #+#    #+#             */
-/*   Updated: 2022/03/17 18:04:18 by arudy            ###   ########.fr       */
+/*   Updated: 2022/03/17 18:24:53 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,9 +21,9 @@ void	sleep_think_routine(t_philo *philo)
 
 void	eat_routine(t_philo *philo)
 {
-	pthread_mutex_lock(&philo->fork_left);
+	lock_fork(philo, 1);
 	print_status("has taken a fork\n", philo);
-	pthread_mutex_lock(philo->fork_right);
+	lock_fork(philo, 2);
 	print_status("has taken a fork\n", philo);
 	print_status("is eating\n", philo);
 	pthread_mutex_lock(&philo->last_eat_mutex);
@@ -32,8 +32,8 @@ void	eat_routine(t_philo *philo)
 		philo->count_eat++;
 	pthread_mutex_unlock(&philo->last_eat_mutex);
 	ft_usleep(philo->data->time_to_eat, philo->data);
-	pthread_mutex_unlock(philo->fork_right);
 	pthread_mutex_unlock(&philo->fork_left);
+	pthread_mutex_unlock(philo->fork_right);
 }
 
 void	*start_routine(void *philo)

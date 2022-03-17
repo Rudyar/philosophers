@@ -6,7 +6,7 @@
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 09:49:46 by arudy             #+#    #+#             */
-/*   Updated: 2022/03/17 17:04:33 by arudy            ###   ########.fr       */
+/*   Updated: 2022/03/17 18:16:03 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,15 +50,16 @@ struct	s_data
 };
 
 size_t		ft_strlen(const char *str);
+long int	get_time(t_data *data);
 int			ft_atoi(const char *str);
+int			ft_dead(t_data *data, int i);
 void		ft_error(char *msg);
 void		check_args(int ac, char **av);
 void		init_data(int ac, char **av, t_data *data);
 void		start_philo(t_data *data);
-long int	get_time(t_data *data);
+void		lock_fork(t_philo *philo, int n);
 void		ft_usleep(long int time, t_data *data);
 void		print_status(char *s, t_philo *philo);
-int			ft_dead(t_data *data, int i);
 void		clean(t_data *data);
 
 #endif
