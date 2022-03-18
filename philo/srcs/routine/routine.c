@@ -6,7 +6,7 @@
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/13 14:05:57 by arudy             #+#    #+#             */
-/*   Updated: 2022/03/17 19:55:48 by arudy            ###   ########.fr       */
+/*   Updated: 2022/03/18 15:44:56 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ void	eat_routine(t_philo *philo)
 	if (philo->data->nb_philo == 1)
 	{
 		pthread_mutex_unlock(&philo->fork_left);
-		print_status("died\n", philo);
+		// print_status("died\n", philo);
 		pthread_mutex_lock(&philo->data->stop_mutex);
 		philo->data->stop = 1;
 		pthread_mutex_unlock(&philo->data->stop_mutex);
@@ -43,26 +43,28 @@ void	eat_routine(t_philo *philo)
 	ft_usleep(philo->data->time_to_eat, philo->data);
 	pthread_mutex_unlock(&philo->fork_left);
 	pthread_mutex_unlock(philo->fork_right);
+	sleep_think_routine(philo);
 }
 
 void	*start_routine(void *philo)
 {
 	t_philo	*p;
-	int		dead;
 
 	p = (t_philo *)philo;
-	pthread_mutex_lock(&p->data->stop_mutex);
-	dead = p->data->stop;
-	pthread_mutex_unlock(&p->data->stop_mutex);
 	if (p->philo_id % 2 == 0)
 		ft_usleep(p->data->time_to_eat / 10, p->data);
-	while (dead == 0)
+	while (1)
 	{
-		eat_routine(p);
-		sleep_think_routine(philo);
+		if (p->data->nb_must_eat != -1 && p->count_eat == p->data->nb_must_eat)
+			return (NULL);
 		pthread_mutex_lock(&p->data->stop_mutex);
-		dead = p->data->stop;
+		if (p->data->stop)
+		{
+			pthread_mutex_unlock(&p->data->stop_mutex);
+			return (NULL);
+		}
 		pthread_mutex_unlock(&p->data->stop_mutex);
+		eat_routine(p);
 	}
 	return (NULL);
 }
@@ -79,18 +81,17 @@ int	check_death(t_data *data)
 			pthread_mutex_lock(&data->philo[i].last_eat_mutex);
 			if (get_time(data) - data->philo[i].last_eat - data->start_time
 				> data->time_to_die)
+			{
+				if (data->nb_must_eat != -1 && data->philo[i].count_eat
+					== data->nb_must_eat)
+				{
+					pthread_mutex_unlock(&data->philo[i].last_eat_mutex);
+					return (0);
+				}
 				return (ft_dead(data, i));
+			}
 			pthread_mutex_unlock(&data->philo[i].last_eat_mutex);
 			i++;
-		}
-		if (data->nb_must_eat != -1)
-		{
-			i = 0;
-			while (i < data->nb_philo
-				&& data->philo[i].count_eat == data->nb_must_eat)
-				i++;
-			if (i == data->nb_philo)
-				return (1);
 		}
 	}
 	return (0);
@@ -112,14 +113,5 @@ void	start_philo(t_data *data)
 		}
 		i++;
 	}
-	while (1)
-	{
-		if (check_death(data) == 1)
-		{
-			pthread_mutex_lock(&data->stop_mutex);
-			data->stop = 1;
-			pthread_mutex_unlock(&data->stop_mutex);
-			return ;
-		}
-	}
+	check_death(data);
 }
