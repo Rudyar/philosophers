@@ -6,7 +6,7 @@
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/13 14:05:57 by arudy             #+#    #+#             */
-/*   Updated: 2022/03/18 15:44:56 by arudy            ###   ########.fr       */
+/*   Updated: 2022/03/19 11:45:46 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,18 +19,14 @@ void	sleep_think_routine(t_philo *philo)
 	print_status("is thinking\n", philo);
 }
 
-void	eat_routine(t_philo *philo)
+int	eat_routine(t_philo *philo)
 {
 	lock_fork(philo, 1);
 	print_status("has taken a fork\n", philo);
 	if (philo->data->nb_philo == 1)
 	{
 		pthread_mutex_unlock(&philo->fork_left);
-		// print_status("died\n", philo);
-		pthread_mutex_lock(&philo->data->stop_mutex);
-		philo->data->stop = 1;
-		pthread_mutex_unlock(&philo->data->stop_mutex);
-		return ;
+		return (1);
 	}
 	lock_fork(philo, 2);
 	print_status("has taken a fork\n", philo);
@@ -44,6 +40,7 @@ void	eat_routine(t_philo *philo)
 	pthread_mutex_unlock(&philo->fork_left);
 	pthread_mutex_unlock(philo->fork_right);
 	sleep_think_routine(philo);
+	return (0);
 }
 
 void	*start_routine(void *philo)
@@ -64,7 +61,8 @@ void	*start_routine(void *philo)
 			return (NULL);
 		}
 		pthread_mutex_unlock(&p->data->stop_mutex);
-		eat_routine(p);
+		if (eat_routine(p))
+			return (NULL);
 	}
 	return (NULL);
 }
