@@ -6,7 +6,7 @@
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/13 14:05:57 by arudy             #+#    #+#             */
-/*   Updated: 2022/03/19 11:45:46 by arudy            ###   ########.fr       */
+/*   Updated: 2022/03/30 14:08:22 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,9 @@ void	sleep_think_routine(t_philo *philo)
 	print_status("is sleeping\n", philo);
 	ft_usleep(philo->data->time_to_sleep, philo->data);
 	print_status("is thinking\n", philo);
+	if (philo->data->time_to_sleep < philo->data->time_to_eat)
+		ft_usleep((philo->data->time_to_eat - philo->data->time_to_sleep) + 1, \
+		philo->data);
 }
 
 int	eat_routine(t_philo *philo)
@@ -77,15 +80,15 @@ int	check_death(t_data *data)
 		while (i < data->nb_philo)
 		{
 			pthread_mutex_lock(&data->philo[i].last_eat_mutex);
+			if (data->nb_must_eat != -1 && data->philo[i].count_eat
+				== data->nb_must_eat)
+			{
+				pthread_mutex_unlock(&data->philo[i].last_eat_mutex);
+				return (0);
+			}
 			if (get_time(data) - data->philo[i].last_eat - data->start_time
 				> data->time_to_die)
 			{
-				if (data->nb_must_eat != -1 && data->philo[i].count_eat
-					== data->nb_must_eat)
-				{
-					pthread_mutex_unlock(&data->philo[i].last_eat_mutex);
-					return (0);
-				}
 				return (ft_dead(data, i));
 			}
 			pthread_mutex_unlock(&data->philo[i].last_eat_mutex);

@@ -6,7 +6,7 @@
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/14 18:00:54 by arudy             #+#    #+#             */
-/*   Updated: 2022/03/18 15:44:38 by arudy            ###   ########.fr       */
+/*   Updated: 2022/03/30 14:01:59 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,6 +82,6 @@ void	ft_usleep(long int time, t_data *data)
 			return ;
 		}
 		pthread_mutex_unlock(&data->stop_mutex);
-		usleep(time / 10000);
+		usleep(1000);
 	}
 }
