@@ -6,7 +6,7 @@
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/13 14:05:57 by arudy             #+#    #+#             */
-/*   Updated: 2022/03/30 14:08:22 by arudy            ###   ########.fr       */
+/*   Updated: 2022/04/03 17:31:11 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,9 +88,7 @@ int	check_death(t_data *data)
 			}
 			if (get_time(data) - data->philo[i].last_eat - data->start_time
 				> data->time_to_die)
-			{
 				return (ft_dead(data, i));
-			}
 			pthread_mutex_unlock(&data->philo[i].last_eat_mutex);
 			i++;
 		}
