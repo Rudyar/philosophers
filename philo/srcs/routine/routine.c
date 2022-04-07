@@ -6,7 +6,7 @@
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/13 14:05:57 by arudy             #+#    #+#             */
-/*   Updated: 2022/04/03 17:31:11 by arudy            ###   ########.fr       */
+/*   Updated: 2022/04/07 11:59:04 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,9 +17,9 @@ void	sleep_think_routine(t_philo *philo)
 	print_status("is sleeping\n", philo);
 	ft_usleep(philo->data->time_to_sleep, philo->data);
 	print_status("is thinking\n", philo);
-	if (philo->data->time_to_sleep < philo->data->time_to_eat)
-		ft_usleep((philo->data->time_to_eat - philo->data->time_to_sleep) + 1, \
-		philo->data);
+	if (philo->data->time_to_sleep <= philo->data->time_to_eat
+		&& philo->data->nb_philo % 2 == 1)
+		ft_usleep(philo->data->time_to_eat, philo->data);
 }
 
 int	eat_routine(t_philo *philo)
