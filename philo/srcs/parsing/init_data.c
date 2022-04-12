@@ -6,7 +6,7 @@
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 12:10:38 by arudy             #+#    #+#             */
-/*   Updated: 2022/03/17 19:45:20 by arudy            ###   ########.fr       */
+/*   Updated: 2022/04/12 15:10:41 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,17 @@ void	mutex_error(int i, int n, t_data *data)
 	j = 0;
 	while (j < i)
 		pthread_mutex_destroy(&data->philo[j++].fork_left);
-	if (n == 2)
+	if (n > 1)
 	{
 		j = 0;
 		while (j < i)
 			pthread_mutex_destroy(&data->philo[j++].last_eat_mutex);
+	}
+	if (n == 3)
+	{
+		j = 0;
+		while (j < i)
+			pthread_mutex_destroy(&data->philo[j++].is_finito_mutex);
 	}
 	pthread_mutex_destroy(&data->write_mutex);
 	pthread_mutex_destroy(&data->stop_mutex);
@@ -46,6 +52,19 @@ void	init_mutex(t_data *data)
 	}
 }
 
+void	give_forks(t_data *data)
+{
+	int	i;
+
+	i = 0;
+	while (i < data->nb_philo - 1)
+	{
+		data->philo[i].fork_right = &data->philo[i + 1].fork_left;
+		i++;
+	}
+	data->philo[i].fork_right = &data->philo[0].fork_left;
+}
+
 void	init_philo(t_data *data)
 {
 	int	i;
@@ -58,19 +77,16 @@ void	init_philo(t_data *data)
 		data->philo[i].count_eat = 0;
 		data->philo[i].data = data;
 		data->philo[i].last_eat = 0;
+		data->philo[i].is_finito = 0;
 		if (pthread_mutex_init(&data->philo[i].fork_left, NULL))
 			return (mutex_error(i, 1, data));
 		if (pthread_mutex_init(&data->philo[i].last_eat_mutex, NULL))
 			return (mutex_error(i, 2, data));
+		if (pthread_mutex_init(&data->philo[i].is_finito_mutex, NULL))
+			return (mutex_error(i, 3, data));
 		i++;
 	}
-	i = 0;
-	while (i < data->nb_philo - 1)
-	{
-		data->philo[i].fork_right = &data->philo[i + 1].fork_left;
-		i++;
-	}
-	data->philo[i].fork_right = &data->philo[0].fork_left;
+	give_forks(data);
 }
 
 void	init_data(int ac, char **av, t_data *data)

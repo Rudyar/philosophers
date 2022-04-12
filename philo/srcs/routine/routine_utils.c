@@ -6,7 +6,7 @@
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/14 18:00:54 by arudy             #+#    #+#             */
-/*   Updated: 2022/03/30 14:01:59 by arudy            ###   ########.fr       */
+/*   Updated: 2022/04/12 14:32:19 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,7 @@ int	ft_dead(t_data *data, int i)
 	pthread_mutex_lock(&data->stop_mutex);
 	data->stop = 1;
 	pthread_mutex_unlock(&data->stop_mutex);
+	pthread_mutex_unlock(&data->philo[i].is_finito_mutex);
 	pthread_mutex_unlock(&data->philo[i].last_eat_mutex);
 	return (0);
 }

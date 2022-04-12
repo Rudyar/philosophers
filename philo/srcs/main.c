@@ -6,7 +6,7 @@
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 09:55:12 by arudy             #+#    #+#             */
-/*   Updated: 2022/03/17 17:43:03 by arudy            ###   ########.fr       */
+/*   Updated: 2022/04/12 14:59:59 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@ void	clean(t_data *data)
 	{
 		pthread_mutex_destroy(&data->philo[i].fork_left);
 		pthread_mutex_destroy(&data->philo[i].last_eat_mutex);
+		pthread_mutex_destroy(&data->philo[i].is_finito_mutex);
 		i++;
 	}
 	pthread_mutex_destroy(&data->write_mutex);

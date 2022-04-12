@@ -6,7 +6,7 @@
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/01/31 09:49:46 by arudy             #+#    #+#             */
-/*   Updated: 2022/03/17 18:16:03 by arudy            ###   ########.fr       */
+/*   Updated: 2022/04/12 14:18:00 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,8 +28,10 @@ struct	s_philo
 	int				philo_id;
 	int				count_eat;
 	long int		last_eat;
+	int				is_finito;
 	pthread_t		philo;
 	pthread_mutex_t	last_eat_mutex;
+	pthread_mutex_t	is_finito_mutex;
 	pthread_mutex_t	fork_left;
 	pthread_mutex_t	*fork_right;
 	t_data			*data;

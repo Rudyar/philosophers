@@ -6,7 +6,7 @@
 /*   By: arudy <arudy@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/03/13 14:05:57 by arudy             #+#    #+#             */
-/*   Updated: 2022/04/07 11:59:04 by arudy            ###   ########.fr       */
+/*   Updated: 2022/04/12 15:07:53 by arudy            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,12 @@ void	*start_routine(void *philo)
 	while (1)
 	{
 		if (p->data->nb_must_eat != -1 && p->count_eat == p->data->nb_must_eat)
+		{
+			pthread_mutex_lock(&p->is_finito_mutex);
+			p->is_finito = 1;
+			pthread_mutex_unlock(&p->is_finito_mutex);
 			return (NULL);
+		}
 		pthread_mutex_lock(&p->data->stop_mutex);
 		if (p->data->stop)
 		{
@@ -80,15 +85,16 @@ int	check_death(t_data *data)
 		while (i < data->nb_philo)
 		{
 			pthread_mutex_lock(&data->philo[i].last_eat_mutex);
-			if (data->nb_must_eat != -1 && data->philo[i].count_eat
-				== data->nb_must_eat)
+			pthread_mutex_lock(&data->philo[i].is_finito_mutex);
+			if (get_time(data) - data->philo[i].last_eat - data->start_time
+				> data->time_to_die && data->philo[i].is_finito == 0)
+				return (ft_dead(data, i));
+			if (data->philo[i].is_finito)
 			{
-				pthread_mutex_unlock(&data->philo[i].last_eat_mutex);
+				pthread_mutex_unlock(&data->philo[i].is_finito_mutex);
 				return (0);
 			}
-			if (get_time(data) - data->philo[i].last_eat - data->start_time
-				> data->time_to_die)
-				return (ft_dead(data, i));
+			pthread_mutex_unlock(&data->philo[i].is_finito_mutex);
 			pthread_mutex_unlock(&data->philo[i].last_eat_mutex);
 			i++;
 		}
